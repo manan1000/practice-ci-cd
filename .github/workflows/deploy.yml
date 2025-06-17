@@ -23,7 +23,7 @@ jobs:
 
       - name: SSH into VM and deploy
         run: |
-          ssh -i ~/.ssh/github-actions-key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -i ~/.ssh/github-actions-key -t ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ~/app || git clone https://github.com/manan1000/practice-ci-cd.git ~/app
             cd ~/app
             git pull origin main
