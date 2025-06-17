@@ -23,4 +23,11 @@ jobs:
 
       - name: SSH into VM and deploy
         run: |
-          ls
+          ssh -i ~/.ssh/github-actions-key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ~/app || git clone https://github.com/manan1000/practice-ci-cd.git ~/app
+            cd ~/app
+            git pull origin main
+            npm i
+            npm run build
+            pm2 restart app || pm2 start npm --name app -- start
+          EOF
