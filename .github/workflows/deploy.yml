@@ -28,5 +28,6 @@ jobs:
             cd ~/app || git clone https://github.com/manan1000/practice-ci-cd.git ~/app
             cd ~/app
             git pull origin main
+            pwd
             npm -v
             which npm
