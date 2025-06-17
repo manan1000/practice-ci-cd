@@ -1,0 +1,33 @@
+# .github/workflows/deploy.yml
+name: Deploy to GCP VM
+
+on:
+  push:
+    branches:
+      - main  # or whichever branch you deploy from
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/github-actions-key
+          chmod 600 ~/.ssh/github-actions-key
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: SSH into VM and deploy
+        run: |
+          ssh -i ~/.ssh/github-actions-key ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ~/app || git clone https://github.com/<your-username>/<repo-name>.git ~/app
+            cd ~/app
+            git pull origin main
+            npm install
+            npm run build
+            pm2 restart app || pm2 start npm --name app -- start
+          EOF
