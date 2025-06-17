@@ -30,4 +30,3 @@ jobs:
             git pull origin main
             pwd
             npm -v
-            which npm
